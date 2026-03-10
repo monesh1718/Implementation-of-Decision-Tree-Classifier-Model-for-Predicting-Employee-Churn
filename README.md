@@ -21,60 +21,42 @@ Program to implement the Decision Tree Classifier Model for Predicting Employee 
 Developed by: monesh s
 RegisterNumber: 25006689
 */
-
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier,plot_tree
+data=pd.read_csv("Employee.csv")
+data.head()
+data.info()
+data.isnull().sum()
+data["left"].value_counts()
 from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+data["salary"]=le.fit_transform(data["salary"])
+data.head()
+x = data[["satisfaction_level", "last_evaluation", "number_project", "average_montly_hours", 
+          "time_spend_company", "Work_accident", "promotion_last_5years", "salary"]]
+x.head() #no departments and no left
+y=data["left"]
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=100)
 from sklearn.tree import DecisionTreeClassifier
+dt=DecisionTreeClassifier(criterion="entropy")
+dt.fit(x_train,y_train)
+y_pred=dt.predict(x_test)
 from sklearn import metrics
-
-data = pd.read_csv("Employee (1).csv")
-
-print("OUTPUT:\nDATA HEAD:")
-print(data.head(), "\n")
-
-print("DATASET INFO:")
-print(data.info(), "\n")
-
-print("NULL DATASET:")
-print(data.isnull().sum(), "\n")
-
-print("VALUES COUNT IN THE LEFT COLUMN:")
-print(data['left'].value_counts(), "\n")
-
-le = LabelEncoder()
-data['salary'] = le.fit_transform(data['salary'])
-
-print("DATASET TRANSFORMED HEAD:")
-print(data.head(), "\n")
-
-X = data[['satisfaction_level', 'last_evaluation', 'number_project',
-          'average_montly_hours', 'time_spend_company',
-          'Work_accident', 'promotion_last_5years', 'salary']]
-y = data['left']
-
-print("X.HEAD:")
-print(X.head(), "\n")
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=100)
-dt = DecisionTreeClassifier(criterion='entropy')
-dt.fit(X_train, y_train)
-
-y_pred = dt.predict(X_test)
-accuracy = metrics.accuracy_score(y_test, y_pred)
-print("ACCURACY:", accuracy, "\n")
-
-sample = [[0.5, 0.8, 9, 260, 6, 0, 1, 2]]
-prediction = dt.predict(sample)
-print("DATA PREDICTION:", prediction, "\n")
+accuracy=metrics.accuracy_score(y_test,y_pred)
+accuracy
+dt.predict([[0.5,0.8,9,260,6,0,1,2]])
+import matplotlib.pyplot as plt 
+plt.figure(figsize=(8,6))
+plot_tree(dt,feature_names=x.columns,class_names=['stayed','left'],filled=True)
+plt.show()
 ```
 
 ## Output:
-<img width="1019" height="619" alt="Screenshot 2026-03-10 082817" src="https://github.com/user-attachments/assets/35d2ed27-873c-4726-abe2-c371805c3792" />
-<img width="504" height="681" alt="Screenshot 2026-03-10 082836" src="https://github.com/user-attachments/assets/52db4cdd-e73e-41a3-8c65-75d0b4feadee" />
-<img width="1000" height="773" alt="Screenshot 2026-03-10 082856" src="https://github.com/user-attachments/assets/fe259b1a-844b-4700-a938-2af39821b637" />
-
-
+<img width="1379" height="751" alt="ml03" src="https://github.com/user-attachments/assets/714ba5d7-f2ee-475e-a97c-d91c2eb39beb" />
+<img width="1384" height="782" alt="ml04" src="https://github.com/user-attachments/assets/c4c7986d-caeb-442d-89a2-e9d61c303ad4" />
+<img width="1381" height="826" alt="ml05" src="https://github.com/user-attachments/assets/729b1f7a-0805-4a42-ae41-bc670bed825f" />
+<img width="1406" height="892" alt="ml06" src="https://github.com/user-attachments/assets/524ceb05-152d-492e-948c-09a5a8416cc7" />
 
 
 ## Result:
